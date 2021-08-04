@@ -1,0 +1,27 @@
+name: Main
+
+on:
+  push:
+    branches:
+    - primary
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version:  [16.x]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: yarn install
+    - run: yarn build-storybook
+    - name: Deploy Storybook
+      uses: JamesIves/github-pages-deploy-action@4.1.4
+      with:
+          branch: gh-pages
+          folder: storybook-static
+
